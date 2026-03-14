@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Harsha's Medibot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/styles.css"/>
+</head>
+<body>
+    <div class="hosp-viewport">
+        <div class="app-container">
+            <div class="clinical-card">
+                <header class="portal-header">
+                    <div class="practitioner-info">
+                        <div class="avatar-box">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Doctor">
+                            <span class="online-indicator"></span>
+                        </div>
+                        <div class="meta-data">
+                            <h1>Harsha's Medibot</h1>
+                            <p>Diagnostic Unit</p>
+                        </div>
+                    </div>
+                    <div class="security-lock">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Secure</span>
+                    </div>
+                </header>
+
+                <main id="messageFormeight" class="consultation-canvas">
+                    <div class="system-status">
+                        <span>Encrypted Clinical Session Active</span>
+                    </div>
+                </main>
+
+                <footer class="portal-footer">
+                    <form id="messageArea" class="clinical-form">
+                        <div class="input-utility">
+                            <i class="fas fa-stethoscope"></i>
+                            <input type="text" id="text" name="msg" placeholder="Describe symptoms..." autocomplete="off" required/>
+                        </div>
+                        <button type="submit" id="send" class="btn-send-clinical">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    <div class="hosp-disclaimer">General Health Hospital Patient Portal v4.2</div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function updateScroll(){
+                var element = document.getElementById("messageFormeight");
+                element.scrollTop = element.scrollHeight;
+            }
+
+            $("#messageArea").on("submit", function(event) {
+                event.preventDefault();
+                const now = new Date();
+                const time = now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                var rawText = $("#text").val();
+
+                var userHtml = `<div class="msg-group user-group fade-in">
+                                    <div class="bubble user-bubble">${rawText}<span class="ts">${time}</span></div>
+                                </div>`;
+                
+                $("#text").val("");
+                $("#messageFormeight").append(userHtml);
+                updateScroll();
+
+                $.ajax({
+                    data: { msg: rawText },
+                    type: "POST",
+                    url: "/get",
+                }).done(function(data) {
+                    var botHtml = `<div class="msg-group bot-group fade-in">
+                                        <div class="bubble bot-bubble">${data}<span class="ts">${time}</span></div>
+                                    </div>`;
+                    $("#messageFormeight").append($.parseHTML(botHtml));
+                    updateScroll();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
