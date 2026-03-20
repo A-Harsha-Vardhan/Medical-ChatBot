@@ -6,6 +6,7 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
+from langchain.memory import ConversationBufferMemory
 from dotenv import load_dotenv
 from src.prompt import *
 import os
@@ -40,7 +41,7 @@ retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":
 
 chatModel = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite-preview", # Current best free model
-    api_key="AIzaSyCDaB2ApvQM2jdjPvIw447dlLR3KFT-o6k",        # Put your key here
+    api_key="AIzaSyB63xvT6VknNtHINuVuUJ5_6pPutt-I2UA",        # Put your key here
     temperature=0.3
 )
 prompt = ChatPromptTemplate.from_messages(
